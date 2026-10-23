@@ -1,5 +1,4 @@
-​package com.example;
-​import net.fabricmc.api.ModInitializer;
+package com.example;​import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
