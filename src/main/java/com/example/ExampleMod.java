@@ -6,8 +6,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
 
 public class ExampleMod implements ModInitializer {
-    public static final String MOD_ID = "itemduplicator";
-
     @Override
     public void onInitialize() {
         ServerTickEvents.END_PLAYER_TICK.register(player -> {
