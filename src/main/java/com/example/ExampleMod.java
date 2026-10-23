@@ -1,4 +1,4 @@
-package com.example;
+​package com.example;
 ​import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -15,7 +15,7 @@ public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 ​private final HashMap<UUID, Integer> sneakTimers = new HashMap<>();
 ​@Override
 public void onInitialize() {
-LOGGER.info("Mod de Duplicacao por Agachamento inicializado com sucesso!");
+LOGGER.info("Mod inicializado com sucesso!");
 ​ServerTickEvents.END_SERVER_TICK.register(server -> {
 for (ServerPlayerEntity player : server.getPlayerList().getPlayers()) {
 UUID uuid = player.getUuid();
@@ -55,7 +55,7 @@ duplicate
 );
 player.getWorld().spawnEntity(itemEntity);
 }
-player.sendMessage(Text.literal("§a[Duplicador] §eItens inacumulaveis duplicados no chao!"), true);
+player.sendMessage(Text.literal("§a[Duplicador] §eItens duplicados!"), true);
 } else {
 if (newCount <= stack.getMaxCount()) {
 stack.setCount(newCount);
@@ -72,7 +72,7 @@ surplus
 );
 player.getWorld().spawnEntity(itemEntity);
 }
-player.sendMessage(Text.literal("§a[Duplicador] §eItem duplicado para " + stack.getCount() + "!"), true);
+player.sendMessage(Text.literal("§a[Duplicador] §eItem duplicado!"), true);
 }
 }
 }
