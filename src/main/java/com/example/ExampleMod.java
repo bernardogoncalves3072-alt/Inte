@@ -1,89 +1,38 @@
-package com.example;
+package com.seuusuario.itemduplicator;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
-import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.entity.ItemEntity;
-import net.minecraft.text.Text;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import net.minecraft.util.Hand;
 
-import java.util.HashMap;
-import java.util.UUID;
-
-public class ExampleMod implements ModInitializer {
+public class ItemDuplicatorMod implements ModInitializer {
     public static final String MOD_ID = "itemduplicator";
-    public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
-
-    private final HashMap<UUID, Integer> sneakTimers = new HashMap<>();
 
     @Override
     public void onInitialize() {
-        LOGGER.info("Mod inicializado com sucesso!");
+        // Este evento roda no servidor para CADA jogador online a cada tick
+        ServerTickEvents.END_PLAYER_TICK.register(player -> {
+            // Garante que o código só executa no lado do servidor
+            if (player.getWorld().isClient()) {
+                return;
+            }
 
-        ServerTickEvents.END_SERVER_TICK.register(server -> {
-            for (ServerPlayerEntity player : server.getPlayerList().getPlayers()) {
-                UUID uuid = player.getUuid();
+            // Verifica se este jogador específico está agachado (Shift / Sneak)
+            if (player.isSneaking()) {
+                // Pega o item da mão principal desse jogador
+                ItemStack mainHandItem = player.getStackInHand(Hand.MAIN_HAND);
 
-                if (player.isSneaking()) {
-                    ItemStack handStack = player.getMainHandStack();
-
-                    if (!handStack.isEmpty()) {
-                        int timer = sneakTimers.getOrDefault(uuid, 0);
-                        timer++;
-
-                        if (timer >= 20) {
-                            duplicateItem(player, handStack);
-                            sneakTimers.put(uuid, 0);
-                        } else {
-                            sneakTimers.put(uuid, timer);
-                        }
-                    } else {
-                        sneakTimers.remove(uuid);
-                    }
-                } else {
-                    sneakTimers.remove(uuid);
+                // Verifica se a mão não está vazia, se o item é empacotável (> 1) e se ainda não está cheio
+                if (!mainHandItem.isEmpty() && mainHandItem.getMaxCount() > 1 && mainHandItem.getCount() < mainHandItem.getMaxCount()) {
+                    
+                    // Cria uma cópia do item e define a quantidade para o máximo do pack (ex: 64)
+                    ItemStack duplicatedStack = mainHandItem.copy();
+                    duplicatedStack.setCount(duplicatedStack.getMaxCount());
+                    
+                    // Atualiza a mão principal apenas deste jogador
+                    player.setStackInHand(Hand.MAIN_HAND, duplicatedStack);
                 }
             }
         });
-    }
-
-    private void duplicateItem(ServerPlayerEntity player, ItemStack stack) {
-        int currentCount = stack.getCount();
-        int newCount = currentCount * 2;
-
-        if (stack.getMaxCount() == 1) {
-            for (int i = 0; i < currentCount; i++) {
-                ItemStack duplicate = stack.copy();
-                duplicate.setCount(1);
-                ItemEntity itemEntity = new ItemEntity(
-                    player.getWorld(), 
-                    player.getX(), 
-                    player.getY(), 
-                    player.getZ(), 
-                    duplicate
-                );
-                player.getWorld().spawnEntity(itemEntity);
-            }
-            player.sendMessage(Text.literal("§a[Duplicador] §eItens duplicados!"), true);
-        } else {
-            if (newCount <= stack.getMaxCount()) {
-                stack.setCount(newCount);
-            } else {
-                stack.setCount(stack.getMaxCount());
-                ItemStack surplus = stack.copy();
-                surplus.setCount(newCount - stack.getMaxCount());
-                ItemEntity itemEntity = new ItemEntity(
-                    player.getWorld(), 
-                    player.getX(), 
-                    player.getY(), 
-                    player.getZ(), 
-                    surplus
-                );
-                player.getWorld().spawnEntity(itemEntity);
-            }
-            player.sendMessage(Text.literal("§a[Duplicador] §eItem duplicado!"), true);
-        }
     }
 }
