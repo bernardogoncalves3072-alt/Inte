@@ -1,17 +1,17 @@
 ​package com.example;
 ​import net.fabricmc.api.ModInitializer;
-​import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
-​import net.minecraft.server.network.ServerPlayerEntity;
-​import net.minecraft.item.ItemStack;
-​import net.minecraft.entity.ItemEntity;
-​import net.minecraft.text.Text;
-​import org.slf4j.Logger;
-​import org.slf4j.LoggerFactory;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.entity.ItemEntity;
+import net.minecraft.text.Text;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 ​import java.util.HashMap;
-​import java.util.UUID;
+import java.util.UUID;
 ​public class ExampleMod implements ModInitializer {
-​public static final String MOD_ID = "itemduplicator";
-​public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
+public static final String MOD_ID = "itemduplicator";
+public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 ​private final HashMap<UUID, Integer> sneakTimers = new HashMap<>();
 ​@Override
 public void onInitialize() {
